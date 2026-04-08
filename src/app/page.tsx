@@ -18,11 +18,15 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 
-// Komponen Animasi Angka Menghitung (Untuk Stats Section)
-const StatsCounter = ({ value, label }) => {
-  const ref = useRef(null);
+interface StatsCounterProps {
+  value: number;
+  label: string;
+}
+
+const StatsCounter = ({ value, label }: StatsCounterProps) => {
+  const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: false, margin: "-50px" });
-  const [displayValue, setDisplayValue] = useState(0);
+  const [displayValue, setDisplayValue] = useState<number>(0);
 
   useEffect(() => {
     if (inView) {
@@ -33,7 +37,7 @@ const StatsCounter = ({ value, label }) => {
       });
       return () => controls.stop();
     } else {
-      setDisplayValue(0); // Reset angka ketika keluar dari layar
+      setDisplayValue(0);
     }
   }, [inView, value]);
 
@@ -50,11 +54,15 @@ const StatsCounter = ({ value, label }) => {
   );
 };
 
-// Komponen Animasi Menghitung Inline (Untuk Hero Section)
-const InlineCounter = ({ value, suffix = '' }) => {
-  const ref = useRef(null);
+interface InlineCounterProps {
+  value: number;
+  suffix?: string;
+}
+
+const InlineCounter = ({ value, suffix = '' }: InlineCounterProps) => {
+  const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: false, margin: "-50px" });
-  const [displayValue, setDisplayValue] = useState(0);
+  const [displayValue, setDisplayValue] = useState<number>(0);
 
   useEffect(() => {
     if (inView) {
@@ -72,11 +80,10 @@ const InlineCounter = ({ value, suffix = '' }) => {
   return <span ref={ref}>{displayValue}{suffix}</span>;
 };
 
-// Komponen Animasi Huruf Akreditasi (C -> B -> A)
 const AnimatedAccreditation = () => {
-  const ref = useRef(null);
+  const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: false, margin: "-50px" });
-  const [grade, setGrade] = useState('C');
+  const [grade, setGrade] = useState<string>('C');
 
   useEffect(() => {
     if (inView) {
@@ -89,18 +96,24 @@ const AnimatedAccreditation = () => {
         clearTimeout(timeout2);
       };
     } else {
-      setGrade('C'); // Reset kembali ke C saat keluar layar
+      setGrade('C');
     }
   }, [inView]);
 
   return <span ref={ref} className="text-[#FFD700] transition-colors duration-300">{grade}</span>;
 };
 
-const AnnouncementItem = ({ date, title, delay }) => (
+interface AnnouncementItemProps {
+  date: string;
+  title: string;
+  delay: number;
+}
+
+const AnnouncementItem = ({ date, title, delay }: AnnouncementItemProps) => (
   <motion.div
     initial={{ opacity: 0, x: -20 }}
     whileInView={{ opacity: 1, x: 0 }}
-    viewport={{ once: false, amount: 0.3 }} // once: false agar berulang
+    viewport={{ once: false, amount: 0.3 }}
     transition={{ delay: delay % 0.5, duration: 0.5 }}
     className="group flex items-start gap-5 p-6 hover:bg-[#F8FAFC] rounded-2xl transition-all duration-300"
   >
@@ -120,7 +133,16 @@ const AnnouncementItem = ({ date, title, delay }) => (
   </motion.div>
 );
 
-const NewsCard = ({ image, category, title, date, views, delay }) => (
+interface NewsCardProps {
+  image: string;
+  category: string;
+  title: string;
+  date: string;
+  views: string;
+  delay: number;
+}
+
+const NewsCard = ({ image, category, title, date, views, delay }: NewsCardProps) => (
   <motion.div
     initial={{ opacity: 0, y: 30 }}
     whileInView={{ opacity: 1, y: 0 }}
@@ -219,7 +241,7 @@ export default function Home() {
                 <h1 className="text-6xl md:text-7xl lg:text-[6.5rem] font-black text-white leading-[0.95] tracking-tighter">
                   Wujudkan Potensi.<br />
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFD700] via-yellow-200 to-white">
-                    Ukir Prestasi.
+                    Ukira Prestasi.
                   </span>
                 </h1>
 
@@ -261,23 +283,20 @@ export default function Home() {
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
                 className="grid grid-cols-2 gap-6"
               >
-                {/* Animasi Akreditasi A, B, C */}
                 <div className="p-8 bg-white/5 backdrop-blur-xl border border-white/10 rounded-[2rem] space-y-4 shadow-xl col-span-2">
-                    <GraduationCap className="w-10 h-10 text-[#FFD700]" />
-                    <p className="text-white font-black text-3xl tracking-tight">Terakreditasi <AnimatedAccreditation /> (Unggul)</p>
-                    <p className="text-slate-300 text-lg">Jaminan kualitas pendidikan standar nasional</p>
+                  <GraduationCap className="w-10 h-10 text-[#FFD700]" />
+                  <p className="text-white font-black text-3xl tracking-tight">Terakreditasi <AnimatedAccreditation /> (Unggul)</p>
+                  <p className="text-slate-300 text-lg">Jaminan kualitas pendidikan standar nasional</p>
                 </div>
-                {/* Animasi Alumni */}
                 <div className="p-8 bg-white/5 backdrop-blur-xl border border-white/10 rounded-[2rem] space-y-3 shadow-xl">
-                    <Users className="w-8 h-8 text-white" />
-                    <p className="text-white font-bold text-xl"><InlineCounter value={54} suffix="k" /> Alumni</p>
-                    <p className="text-slate-400 text-sm">Jejaring global</p>
+                  <Users className="w-8 h-8 text-white" />
+                  <p className="text-white font-bold text-xl"><InlineCounter value={54} suffix="k" /> Alumni</p>
+                  <p className="text-slate-400 text-sm">Jejaring global</p>
                 </div>
-                {/* Animasi Prodi */}
                 <div className="p-8 bg-white/10 backdrop-blur-xl border border-white/20 rounded-[2rem] space-y-3 shadow-xl mt-8">
-                    <BookOpen className="w-8 h-8 text-white" />
-                    <p className="text-white font-bold text-xl"><InlineCounter value={32} /> Prodi</p>
-                    <p className="text-slate-400 text-sm">Sesuai Kebutuhan Industri</p>
+                  <BookOpen className="w-8 h-8 text-white" />
+                  <p className="text-white font-bold text-xl"><InlineCounter value={32} /> Prodi</p>
+                  <p className="text-slate-400 text-sm">Sesuai Kebutuhan Industri</p>
                 </div>
               </motion.div>
             </motion.div>
@@ -321,10 +340,10 @@ export default function Home() {
               </motion.div>
 
               <motion.p
-                 initial={{ opacity: 0, y: 20 }}
-                 whileInView={{ opacity: 1, y: 0 }}
-                 viewport={{ once: false, amount: 0.3 }}
-                 className="text-slate-500 text-xl leading-relaxed font-medium"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false, amount: 0.3 }}
+                className="text-slate-500 text-xl leading-relaxed font-medium"
               >
                 Bukti nyata komitmen kami dalam mencetak generasi pemimpin berkarakter dan berdaya saing global selama lebih dari setengah abad.
               </motion.p>
@@ -340,9 +359,8 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Animasi Menghitung Besar */}
             <div className="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-8">
-              <motion.div 
+              <motion.div
                 whileHover={{ y: -10, boxShadow: "0 30px 60px -15px rgba(0,29,74,0.15)" }}
                 className="p-10 bg-white rounded-[2.5rem] border border-slate-100 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.05)] transition-all duration-300 group"
               >
@@ -352,7 +370,7 @@ export default function Home() {
                 <StatsCounter value={11000} label="Mahasiswa Aktif" />
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 whileHover={{ y: -10, boxShadow: "0 30px 60px -15px rgba(0,0,0,0.1)" }}
                 className="p-10 bg-white rounded-[2.5rem] border border-slate-100 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.05)] transition-all duration-300 group md:mt-16"
               >
@@ -362,7 +380,7 @@ export default function Home() {
                 <StatsCounter value={54000} label="Alumni Tersebar" />
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 whileHover={{ y: -10, boxShadow: "0 30px 60px -15px rgba(0,0,0,0.1)" }}
                 className="p-10 bg-white rounded-[2.5rem] border border-slate-100 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.05)] transition-all duration-300 group"
               >
@@ -372,7 +390,7 @@ export default function Home() {
                 <StatsCounter value={9} label="Fakultas Unggulan" />
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 whileHover={{ y: -10, boxShadow: "0 30px 60px -15px rgba(0,0,0,0.1)" }}
                 className="p-10 bg-white rounded-[2.5rem] border border-slate-100 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.05)] transition-all duration-300 group md:mt-16"
               >
@@ -386,7 +404,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Bagian Berita dan Pengumuman menggunakan viewport={{once: false}} */}
       <section className="py-40 bg-white w-full overflow-hidden">
         <div className="w-full max-w-[90rem] mx-auto px-6 md:px-12">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-24 gap-8">
@@ -407,11 +424,11 @@ export default function Home() {
                 Berita & <span className="text-slate-400 font-light italic">Lensa Kampus</span>
               </h2>
             </motion.div>
-            
+
             <Link href="/berita" className="group flex items-center gap-3 px-8 py-4 bg-slate-50 hover:bg-[#001D4A] rounded-2xl transition-colors duration-300">
               <span className="text-[#001D4A] group-hover:text-white font-bold transition-colors">Lihat Semua</span>
               <div className="w-10 h-10 rounded-full bg-white text-[#001D4A] flex items-center justify-center group-hover:bg-[#FFD700] transition-colors">
-                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </div>
             </Link>
           </div>
@@ -426,10 +443,10 @@ export default function Home() {
 
       <section className="py-40 bg-[#F8FAFC] w-full relative">
         <div className="absolute top-0 right-0 w-1/3 h-full bg-[#001D4A]/[0.02] rounded-l-[10rem] -z-0" />
-        
+
         <div className="w-full max-w-[90rem] mx-auto px-6 md:px-12 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: false, margin: "-100px" }}
@@ -458,22 +475,22 @@ export default function Home() {
             </motion.div>
 
             <div className="lg:col-span-5 space-y-10">
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, x: 30 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: false, amount: 0.3 }}
                 className="bg-[#001D4A] p-12 rounded-[3rem] shadow-2xl relative overflow-hidden group"
               >
                 <div className="absolute -right-10 -bottom-10 opacity-10 text-white group-hover:scale-110 transition-transform duration-700">
-                    <Trophy size={200} strokeWidth={1} />
+                  <Trophy size={200} strokeWidth={1} />
                 </div>
-                
+
                 <div className="relative z-10 space-y-8">
                   <div className="w-16 h-16 bg-[#FFD700] rounded-2xl flex items-center justify-center shadow-lg">
                     <Trophy className="w-8 h-8 text-[#001D4A]" />
                   </div>
                   <div className="space-y-4">
-                    <h3 className="text-3xl font-black text-white leading-tight tracking-tight">Prestasi <br/>Bhirawa Anoraga</h3>
+                    <h3 className="text-3xl font-black text-white leading-tight tracking-tight">Prestasi <br />Bhirawa Anoraga</h3>
                     <p className="text-slate-300 text-lg leading-relaxed font-medium">
                       Tinta emas gemilang mahasiswa UNMER di kancah nasional dan internasional.
                     </p>
@@ -485,7 +502,7 @@ export default function Home() {
                 </div>
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, x: 30 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: false, amount: 0.3 }}
@@ -510,7 +527,7 @@ export default function Home() {
 
       <section className="py-48 bg-white w-full relative overflow-hidden text-center">
         <div className="absolute inset-0 flex items-center justify-center opacity-[0.02] z-0 select-none pointer-events-none">
-            <h1 className="text-[30vw] font-black leading-none">UNMER</h1>
+          <h1 className="text-[30vw] font-black leading-none">UNMER</h1>
         </div>
 
         <div className="w-full max-w-[90rem] mx-auto px-6 relative z-10 space-y-16">
@@ -522,18 +539,18 @@ export default function Home() {
           >
             <GraduationCap className="w-12 h-12 text-[#F57C00]" />
           </motion.div>
-          
-          <motion.h2 
+
+          <motion.h2
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false, amount: 0.3 }}
             className="text-6xl md:text-8xl font-black text-[#001D4A] leading-[0.95] tracking-tighter"
           >
-            Mulailah Masa Depan <br/>
+            Mulailah Masa Depan <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F57C00] to-orange-400">Di Sini.</span>
           </motion.h2>
 
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false, amount: 0.3 }}
@@ -543,7 +560,7 @@ export default function Home() {
             Bergabunglah bersama ribuan pemimpin masa depan yang telah menemukan potensi terbaiknya di Universitas Merdeka Malang.
           </motion.p>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false, amount: 0.3 }}
