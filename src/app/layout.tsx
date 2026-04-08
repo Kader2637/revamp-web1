@@ -17,6 +17,39 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   title: "Universitas Merdeka Malang | UNMER",
   description: "Website Resmi Universitas Merdeka Malang - Kampus Merdeka, Berkarakter & Unggul.",
+  keywords: ["UNMER", "Universitas Merdeka Malang", "Kampus Malang", "Pendidikan Tinggi"],
+  authors: [{ name: "UNMER Malang" }],
+  icons: {
+    icon: "/logounmer.png",
+    shortcut: "/logounmer.png",
+    apple: "/logounmer.png",
+  },
+  openGraph: {
+    title: "Universitas Merdeka Malang | UNMER",
+    description: "Kampus Merdeka, Berkarakter & Unggul. Bergabunglah bersama Universitas Merdeka Malang.",
+    url: "https://ngodingin.web.id",
+    siteName: "UNMER Malang",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "UNMER Malang",
+      },
+    ],
+    locale: "id_ID",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Universitas Merdeka Malang | UNMER",
+    description: "Website Resmi Universitas Merdeka Malang",
+    images: ["/og-image.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
