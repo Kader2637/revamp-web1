@@ -124,7 +124,7 @@ const NewsCard = ({ image, category, title, date, views, delay }) => (
   <motion.div
     initial={{ opacity: 0, y: 30 }}
     whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: false, amount: 0.2 }} // once: false agar berulang
+    viewport={{ once: false, amount: 0.2 }}
     transition={{ delay: delay % 0.6, duration: 0.8 }}
     whileHover={{ y: -10 }}
     className="bg-white rounded-[2rem] overflow-hidden shadow-[0_10px_40px_-15px_rgba(0,0,0,0.08)] border border-slate-100 group h-full flex flex-col"

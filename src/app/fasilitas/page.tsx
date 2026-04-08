@@ -4,12 +4,13 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, Cpu, Scale, Users, Brain, HardHat, 
-  Briefcase, GraduationCap, Building2, CheckCircle2, 
-  Wifi, Zap, MapPin, Search, LucideIcon 
+  Briefcase, Building2, CheckCircle2, 
+  Wifi, Zap, MapPin, Search, 
+  LucideIcon // Penting: Import tipe ini untuk TypeScript
 } from 'lucide-react';
 import PageHeader from '@/components/PageHeader';
 
-// 1. Definisikan Interface secara eksplisit
+// 1. Definisikan struktur data agar TypeScript tidak bingung
 interface DetailFasilitas {
   nama: string;
   desc: string;
@@ -19,13 +20,12 @@ interface Fakultas {
   id: string;
   nama: string;
   alias: string;
-  icon: LucideIcon;
+  icon: LucideIcon; // Menggunakan tipe LucideIcon
   color: string;
   desc: string;
   detailFasilitas: DetailFasilitas[];
 }
 
-// 2. Terapkan tipe Fakultas[] ke array data
 const fakultasData: Fakultas[] = [
   {
     id: 'unmer',
@@ -123,6 +123,7 @@ const fakultasData: Fakultas[] = [
 ];
 
 export default function FasilitasPage() {
+  // 2. Berikan tipe Generics <Fakultas | null> agar state bisa menerima objek
   const [selectedFakultas, setSelectedFakultas] = useState<Fakultas | null>(null);
 
   return (
@@ -135,7 +136,6 @@ export default function FasilitasPage() {
       />
 
       <div className="max-w-7xl mx-auto px-6 -mt-12 relative z-30">
-        {/* Search Bar / Filter Info */}
         <div className="bg-white p-6 rounded-3xl shadow-xl border border-slate-100 mb-16 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-[#001D4A] rounded-2xl flex items-center justify-center text-[#FFD700]">
@@ -153,7 +153,6 @@ export default function FasilitasPage() {
           </div>
         </div>
 
-        {/* Grid Kartu Fakultas */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {fakultasData.map((f, i) => (
             <motion.div
@@ -166,7 +165,6 @@ export default function FasilitasPage() {
               onClick={() => setSelectedFakultas(f)}
               className="cursor-pointer group relative bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm hover:shadow-2xl hover:shadow-blue-900/5 transition-all duration-500 overflow-hidden"
             >
-              {/* Background Accent */}
               <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${f.color} opacity-5 rounded-bl-[5rem] group-hover:opacity-10 transition-opacity`} />
               
               <div className="relative z-10 space-y-6">
@@ -193,11 +191,9 @@ export default function FasilitasPage() {
         </div>
       </div>
 
-      {/* POP-UP MODAL */}
       <AnimatePresence>
         {selectedFakultas && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8">
-            {/* Backdrop */}
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -206,7 +202,6 @@ export default function FasilitasPage() {
               className="absolute inset-0 bg-[#001D4A]/80 backdrop-blur-md"
             />
 
-            {/* Modal Content */}
             <motion.div 
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
