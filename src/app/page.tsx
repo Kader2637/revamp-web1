@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, useInView, animate } from 'framer-motion';
 import {
   ArrowRight,
   GraduationCap,
@@ -18,30 +18,90 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 
-const StatsCounter = ({ value, label }) => (
-  <div className="flex flex-col items-center">
-    <div className="flex items-baseline gap-1">
-      <motion.span
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1 }}
-        className="text-5xl md:text-6xl font-black text-[#001D4A] tracking-tighter"
-      >
-        {value.toLocaleString('id-ID')}
-      </motion.span>
-      <span className="text-3xl font-black text-[#F57C00]">+</span>
+// Komponen Animasi Angka Menghitung (Untuk Stats Section)
+const StatsCounter = ({ value, label }) => {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: false, margin: "-50px" });
+  const [displayValue, setDisplayValue] = useState(0);
+
+  useEffect(() => {
+    if (inView) {
+      const controls = animate(0, value, {
+        duration: 2,
+        ease: "easeOut",
+        onUpdate: (val) => setDisplayValue(Math.floor(val))
+      });
+      return () => controls.stop();
+    } else {
+      setDisplayValue(0); // Reset angka ketika keluar dari layar
+    }
+  }, [inView, value]);
+
+  return (
+    <div className="flex flex-col items-center" ref={ref}>
+      <div className="flex items-baseline gap-1">
+        <span className="text-5xl md:text-6xl font-black text-[#001D4A] tracking-tighter">
+          {displayValue.toLocaleString('id-ID')}
+        </span>
+        <span className="text-3xl font-black text-[#F57C00]">+</span>
+      </div>
+      <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px] mt-2">{label}</p>
     </div>
-    <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px] mt-2">{label}</p>
-  </div>
-);
+  );
+};
+
+// Komponen Animasi Menghitung Inline (Untuk Hero Section)
+const InlineCounter = ({ value, suffix = '' }) => {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: false, margin: "-50px" });
+  const [displayValue, setDisplayValue] = useState(0);
+
+  useEffect(() => {
+    if (inView) {
+      const controls = animate(0, value, {
+        duration: 1.5,
+        ease: "easeOut",
+        onUpdate: (val) => setDisplayValue(Math.floor(val))
+      });
+      return () => controls.stop();
+    } else {
+      setDisplayValue(0);
+    }
+  }, [inView, value]);
+
+  return <span ref={ref}>{displayValue}{suffix}</span>;
+};
+
+// Komponen Animasi Huruf Akreditasi (C -> B -> A)
+const AnimatedAccreditation = () => {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: false, margin: "-50px" });
+  const [grade, setGrade] = useState('C');
+
+  useEffect(() => {
+    if (inView) {
+      setGrade('C');
+      const timeout1 = setTimeout(() => setGrade('B'), 500);
+      const timeout2 = setTimeout(() => setGrade('A'), 1000);
+
+      return () => {
+        clearTimeout(timeout1);
+        clearTimeout(timeout2);
+      };
+    } else {
+      setGrade('C'); // Reset kembali ke C saat keluar layar
+    }
+  }, [inView]);
+
+  return <span ref={ref} className="text-[#FFD700] transition-colors duration-300">{grade}</span>;
+};
 
 const AnnouncementItem = ({ date, title, delay }) => (
   <motion.div
     initial={{ opacity: 0, x: -20 }}
     whileInView={{ opacity: 1, x: 0 }}
-    viewport={{ once: true }}
-    transition={{ delay, duration: 0.5 }}
+    viewport={{ once: false, amount: 0.3 }} // once: false agar berulang
+    transition={{ delay: delay % 0.5, duration: 0.5 }}
     className="group flex items-start gap-5 p-6 hover:bg-[#F8FAFC] rounded-2xl transition-all duration-300"
   >
     <div className="flex flex-col items-center text-center shrink-0 w-16 pt-1">
@@ -64,8 +124,8 @@ const NewsCard = ({ image, category, title, date, views, delay }) => (
   <motion.div
     initial={{ opacity: 0, y: 30 }}
     whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    transition={{ delay, duration: 0.8 }}
+    viewport={{ once: false, amount: 0.2 }} // once: false agar berulang
+    transition={{ delay: delay % 0.6, duration: 0.8 }}
     whileHover={{ y: -10 }}
     className="bg-white rounded-[2rem] overflow-hidden shadow-[0_10px_40px_-15px_rgba(0,0,0,0.08)] border border-slate-100 group h-full flex flex-col"
   >
@@ -127,14 +187,8 @@ export default function Home() {
     <div className="flex flex-col overflow-x-hidden bg-white text-slate-800 font-sans selection:bg-[#FFD700]/30">
       <section className="relative h-screen flex items-center overflow-hidden bg-slate-900 section-loaded">
         <motion.div
-          animate={{
-            scale: [1, 1.1, 1],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "linear"
-          }}
+          animate={{ scale: [1, 1.1, 1] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
           className="absolute inset-0 z-0"
         >
           <img
@@ -152,7 +206,8 @@ export default function Home() {
             <div className="lg:col-span-7 space-y-10">
               <motion.div
                 initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false, amount: 0.3 }}
                 transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
                 className="space-y-6"
               >
@@ -175,8 +230,9 @@ export default function Home() {
 
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4, duration: 0.8 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false, amount: 0.3 }}
+                transition={{ delay: 0.2, duration: 0.8 }}
                 className="flex flex-col sm:flex-row gap-5 pt-6"
               >
                 <Link
@@ -195,8 +251,9 @@ export default function Home() {
 
             <motion.div
               initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.7, duration: 1, ease: [0.22, 1, 0.36, 1] }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: false, amount: 0.3 }}
+              transition={{ delay: 0.3, duration: 1, ease: [0.22, 1, 0.36, 1] }}
               className="lg:col-span-5 hidden lg:block relative"
             >
               <motion.div
@@ -204,19 +261,22 @@ export default function Home() {
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
                 className="grid grid-cols-2 gap-6"
               >
+                {/* Animasi Akreditasi A, B, C */}
                 <div className="p-8 bg-white/5 backdrop-blur-xl border border-white/10 rounded-[2rem] space-y-4 shadow-xl col-span-2">
                     <GraduationCap className="w-10 h-10 text-[#FFD700]" />
-                    <p className="text-white font-black text-3xl tracking-tight">Terakreditasi A (Unggul)</p>
+                    <p className="text-white font-black text-3xl tracking-tight">Terakreditasi <AnimatedAccreditation /> (Unggul)</p>
                     <p className="text-slate-300 text-lg">Jaminan kualitas pendidikan standar nasional</p>
                 </div>
+                {/* Animasi Alumni */}
                 <div className="p-8 bg-white/5 backdrop-blur-xl border border-white/10 rounded-[2rem] space-y-3 shadow-xl">
                     <Users className="w-8 h-8 text-white" />
-                    <p className="text-white font-bold text-xl">54k Alumni</p>
+                    <p className="text-white font-bold text-xl"><InlineCounter value={54} suffix="k" /> Alumni</p>
                     <p className="text-slate-400 text-sm">Jejaring global</p>
                 </div>
+                {/* Animasi Prodi */}
                 <div className="p-8 bg-white/10 backdrop-blur-xl border border-white/20 rounded-[2rem] space-y-3 shadow-xl mt-8">
                     <BookOpen className="w-8 h-8 text-white" />
-                    <p className="text-white font-bold text-xl">32 Prodi</p>
+                    <p className="text-white font-bold text-xl"><InlineCounter value={32} /> Prodi</p>
                     <p className="text-slate-400 text-sm">Sesuai Kebutuhan Industri</p>
                 </div>
               </motion.div>
@@ -243,7 +303,12 @@ export default function Home() {
         <div className="w-full max-w-[90rem] mx-auto px-6 md:px-12 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-20 items-center">
             <div className="lg:col-span-5 space-y-8">
-              <div className="space-y-4">
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: false, amount: 0.3 }}
+                className="space-y-4"
+              >
                 <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white border border-slate-100 rounded-full shadow-inner">
                   <Sparkles className="w-4 h-4 text-[#F57C00]" />
                   <span className="text-[#001D4A] font-extrabold uppercase tracking-widest text-[10px]">Dampak & Dedikasi</span>
@@ -253,11 +318,16 @@ export default function Home() {
                   UN<span className="text-[#F57C00]">M</span>ER <br />
                   <span className="text-slate-400 font-light italic">Dalam Angka</span>
                 </h2>
-              </div>
+              </motion.div>
 
-              <p className="text-slate-500 text-xl leading-relaxed font-medium">
+              <motion.p
+                 initial={{ opacity: 0, y: 20 }}
+                 whileInView={{ opacity: 1, y: 0 }}
+                 viewport={{ once: false, amount: 0.3 }}
+                 className="text-slate-500 text-xl leading-relaxed font-medium"
+              >
                 Bukti nyata komitmen kami dalam mencetak generasi pemimpin berkarakter dan berdaya saing global selama lebih dari setengah abad.
-              </p>
+              </motion.p>
 
               <div className="pt-6">
                 <Link href="/profil" className="inline-flex items-center gap-3 text-[#001D4A] font-black text-lg group">
@@ -270,6 +340,7 @@ export default function Home() {
               </div>
             </div>
 
+            {/* Animasi Menghitung Besar */}
             <div className="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-8">
               <motion.div 
                 whileHover={{ y: -10, boxShadow: "0 30px 60px -15px rgba(0,29,74,0.15)" }}
@@ -315,10 +386,16 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Bagian Berita dan Pengumuman menggunakan viewport={{once: false}} */}
       <section className="py-40 bg-white w-full overflow-hidden">
         <div className="w-full max-w-[90rem] mx-auto px-6 md:px-12">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-24 gap-8">
-            <div className="space-y-4">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: false, amount: 0.3 }}
+              className="space-y-4"
+            >
               <div className="inline-flex items-center gap-2.5 px-4 py-2 bg-slate-100 rounded-full">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#F57C00] opacity-75"></span>
@@ -329,7 +406,7 @@ export default function Home() {
               <h2 className="text-5xl md:text-6xl font-black text-[#001D4A] leading-tight tracking-tighter">
                 Berita & <span className="text-slate-400 font-light italic">Lensa Kampus</span>
               </h2>
-            </div>
+            </motion.div>
             
             <Link href="/berita" className="group flex items-center gap-3 px-8 py-4 bg-slate-50 hover:bg-[#001D4A] rounded-2xl transition-colors duration-300">
               <span className="text-[#001D4A] group-hover:text-white font-bold transition-colors">Lihat Semua</span>
@@ -355,7 +432,7 @@ export default function Home() {
             <motion.div 
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
+              viewport={{ once: false, margin: "-100px" }}
               className="lg:col-span-7 space-y-12"
             >
               <div className="space-y-4">
@@ -384,7 +461,7 @@ export default function Home() {
               <motion.div 
                 initial={{ opacity: 0, x: 30 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: false, amount: 0.3 }}
                 className="bg-[#001D4A] p-12 rounded-[3rem] shadow-2xl relative overflow-hidden group"
               >
                 <div className="absolute -right-10 -bottom-10 opacity-10 text-white group-hover:scale-110 transition-transform duration-700">
@@ -411,7 +488,7 @@ export default function Home() {
               <motion.div 
                 initial={{ opacity: 0, x: 30 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: false, amount: 0.3 }}
                 transition={{ delay: 0.2 }}
                 className="p-12 bg-white border border-slate-100 rounded-[3rem] shadow-xl text-center space-y-8 group"
               >
@@ -440,7 +517,7 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
+            viewport={{ once: false, amount: 0.5 }}
             className="w-24 h-24 bg-[#FFD700]/10 rounded-3xl mx-auto flex items-center justify-center rotate-12"
           >
             <GraduationCap className="w-12 h-12 text-[#F57C00]" />
@@ -449,7 +526,7 @@ export default function Home() {
           <motion.h2 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: false, amount: 0.3 }}
             className="text-6xl md:text-8xl font-black text-[#001D4A] leading-[0.95] tracking-tighter"
           >
             Mulailah Masa Depan <br/>
@@ -459,7 +536,7 @@ export default function Home() {
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: false, amount: 0.3 }}
             transition={{ delay: 0.2 }}
             className="text-2xl text-slate-500 font-medium max-w-2xl mx-auto leading-relaxed"
           >
@@ -469,7 +546,7 @@ export default function Home() {
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: false, amount: 0.3 }}
             transition={{ delay: 0.4 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-8 pt-10"
           >

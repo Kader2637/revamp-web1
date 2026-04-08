@@ -5,11 +5,28 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, Cpu, Scale, Users, Brain, HardHat, 
   Briefcase, GraduationCap, Building2, CheckCircle2, 
-  Wifi, Zap, MapPin, Search 
+  Wifi, Zap, MapPin, Search, LucideIcon 
 } from 'lucide-react';
 import PageHeader from '@/components/PageHeader';
 
-const fakultasData = [
+// 1. Definisikan Interface secara eksplisit
+interface DetailFasilitas {
+  nama: string;
+  desc: string;
+}
+
+interface Fakultas {
+  id: string;
+  nama: string;
+  alias: string;
+  icon: LucideIcon;
+  color: string;
+  desc: string;
+  detailFasilitas: DetailFasilitas[];
+}
+
+// 2. Terapkan tipe Fakultas[] ke array data
+const fakultasData: Fakultas[] = [
   {
     id: 'unmer',
     nama: 'Fasilitas Terpadu UNMER',
@@ -104,8 +121,6 @@ const fakultasData = [
     ]
   }
 ];
-
-type Fakultas = typeof fakultasData[0];
 
 export default function FasilitasPage() {
   const [selectedFakultas, setSelectedFakultas] = useState<Fakultas | null>(null);
