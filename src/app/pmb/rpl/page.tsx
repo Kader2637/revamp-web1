@@ -1,202 +1,270 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform, Variants } from 'framer-motion';
 import { 
   FileText, 
   ArrowRight, 
   CheckCircle2, 
   AlertCircle, 
-  Users2, 
   Briefcase, 
-  GraduationCap,
   Download,
-  HelpCircle
+  HelpCircle,
+  Zap,
+  Repeat,
+  ArrowUpRight
 } from 'lucide-react';
 import PageHeader from '@/components/PageHeader';
 import Link from 'next/link';
 
 const rplData = [
   {
-    title: 'Transfer Mahasiswa (Pindahan)',
+    title: 'Transfer Akademik',
     subtitle: 'Internal & Eksternal PT',
-    icon: Users2,
-    description: 'Jalur khusus bagi mahasiswa yang ingin melanjutkan studi di UNMER Malang dari Perguruan Tinggi asal.',
-    eligibility: [
-      'Terdaftar di PD-DIKTI perguruan tinggi asal',
-      'IPK Minimal 2.75 (Skala 4.00)',
-      'Akreditasi prodi asal minimal sama dengan prodi tujuan',
-      'Bukan karena putus studi (Drop Out) sanksi disiplin',
-      'Maksimal konversi SKS ditentukan oleh Kaprodi'
-    ],
-    highlight: 'Proses konversi nilai transparan & cepat.'
+    icon: Repeat,
+    description: 'Lanjutkan studi Anda tanpa harus mengulang dari nol. Kami menghargai setiap SKS yang telah Anda tempuh.',
+    eligibility: ['Terdaftar di PD-DIKTI', 'IPK Minimal 2.75', 'Akreditasi prodi relevan', 'Bukan sanksi Drop Out'],
+    highlight: 'Konversi transparan & akurat.'
   },
   {
-    title: 'Rekognisi Pembelajaran Lampau',
-    subtitle: 'Jalur Pengalaman Kerja / RPL',
+    title: 'Rekognisi (RPL)',
+    subtitle: 'Work Experience Pathway',
     icon: Briefcase,
-    description: 'Pengakuan atas capaian pembelajaran dari pendidikan formal, non-formal, atau pengalaman kerja menjadi SKS.',
-    eligibility: [
-      'Pengalaman kerja relevan minimal 2 - 5 tahun',
-      'Lulusan SMA/K dengan sertifikat kompetensi',
-      'Lulusan D1/D2/D3 yang ingin melanjutkan ke S1',
-      'Memiliki portofolio bukti karya atau proyek',
-      'Lulus asesmen mandiri dan wawancara tim ahli'
-    ],
-    highlight: 'Potensi lulus lebih cepat dengan klaim SKS.'
+    description: 'Ubah pengalaman kerja bertahun-tahun menjadi kredit akademik resmi. Pengalaman Anda adalah investasi.',
+    eligibility: ['Min. Kerja 2 Tahun', 'Sertifikat Kompetensi', 'Portofolio Proyek', 'Lulus Asesmen Pakar'],
+    highlight: 'Lulus lebih cepat & hemat biaya.'
   }
 ];
 
-const steps = [
-  { id: '01', label: 'Konsultasi Pra-Daftar', detail: 'Menghubungi prodi tujuan untuk evaluasi awal berkas & SKS.' },
-  { id: '02', label: 'Pendaftaran Online', detail: 'Melalui pmb.unmer.ac.id pilih kategori Pindahan/RPL.' },
-  { id: '03', label: 'Upload Portofolio', detail: 'Mengunggah transkrip, surat pindah, atau bukti kerja.' },
-  { id: '04', label: 'Uji Kompetensi', detail: 'Wawancara atau tes teknis oleh tim Asesor Prodi.' },
-  { id: '05', label: 'Penetapan SKS', detail: 'Penerbitan SK Rekognisi & Penentuan mata kuliah sisa.' }
-];
+// Animasi Masuk (Entrance)
+const fadelnUp: Variants = {
+  hidden: { opacity: 0, y: 60, scale: 0.9 },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    scale: 1,
+    transition: { type: 'spring', damping: 20, stiffness: 100 } 
+  }
+};
+
+const staggerContainer: Variants = {
+  hidden: { opacity: 0 },
+  visible: { 
+    opacity: 1,
+    transition: { staggerChildren: 0.2 } 
+  }
+};
 
 export default function RplPage() {
+  const { scrollYProgress } = useScroll();
+  // Efek parallax: saat scroll, kontainer akan sedikit bergeser
+  const yRange = useTransform(scrollYProgress, [0, 1], [0, -100]);
+
   return (
-    <div className="bg-[#FCFCFD] min-h-screen font-sans">
+    <div className="bg-[#FFFFFF] min-h-screen selection:bg-[#001D4A] selection:text-[#FFD700] overflow-x-hidden">
       <PageHeader
-        title="Jalur Transfer"
-        accent="& Rekognisi (RPL)"
-        subtitle="Transformasikan pengalaman kerja dan studi terdahulu Anda menjadi kredit akademik di Universitas Merdeka Malang."
-        breadcrumbs={[{ name: 'Penerimaan', href: '#' }, { name: 'RPL & Pindahan', href: '/pmb/rpl' }]}
+        title="Jalur"
+        accent="RPL & Transfer"
+        subtitle="Transformasikan pengalaman profesional dan studi terdahulu Anda menjadi gelar sarjana di UNMER Malang."
+        breadcrumbs={[{ name: 'Penerimaan', href: '#' }, { name: 'RPL', href: '/rpl' }]}
       />
 
-      {/* DUAL PATHWAY SECTION */}
-      <section className="py-24 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      {/* --- DUAL PATHWAY SECTION --- */}
+      <section className="py-24 px-6 relative">
+        <motion.div 
+          className="max-w-7xl mx-auto"
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, amount: 0.1 }} // Animasi jalan terus tiap scroll
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
             {rplData.map((item, idx) => (
               <motion.div
                 key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="bg-white border border-slate-200 p-10 relative overflow-hidden group hover:border-[#FFD700] transition-all duration-500 shadow-sm"
+                variants={fadelnUp}
+                whileHover={{ y: -15, transition: { duration: 0.3 } }}
+                className="group relative bg-white border border-slate-100 p-10 md:p-14 rounded-[4rem] shadow-xl hover:shadow-[0_30px_60px_-15px_rgba(0,29,74,0.15)] transition-all duration-500 overflow-hidden"
               >
-                <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-110 group-hover:opacity-10 transition-all">
-                  <item.icon size={120} />
-                </div>
-                
-                <div className="relative z-10 space-y-6">
-                  <div className="space-y-1">
-                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F57C00]">{item.subtitle}</p>
-                    <h2 className="text-3xl font-black text-[#001D4A] tracking-tight">{item.title}</h2>
+                {/* Floating Icon Background */}
+                <motion.div 
+                  animate={{ y: [0, -10, 0], rotate: [0, 5, 0] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                  className="absolute -top-10 -right-10 text-slate-50 opacity-10 group-hover:text-[#FFD700] group-hover:opacity-20 transition-all duration-700"
+                >
+                  <item.icon size={280} />
+                </motion.div>
+
+                <div className="relative z-10 space-y-8">
+                  <div className="flex justify-between items-start">
+                    <div className="w-20 h-20 bg-[#001D4A] text-[#FFD700] rounded-3xl flex items-center justify-center group-hover:rotate-12 transition-transform duration-500 shadow-2xl shadow-blue-900/40">
+                      <item.icon size={36} />
+                    </div>
+                    <Link href="#" className="w-12 h-12 rounded-full border border-slate-100 flex items-center justify-center text-slate-400 hover:bg-[#001D4A] hover:text-[#FFD700] transition-all">
+                      <ArrowUpRight size={20} />
+                    </Link>
                   </div>
-                  
-                  <p className="text-slate-500 text-sm leading-relaxed max-w-md">
-                    {item.description}
+
+                  <div>
+                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#F57C00]">{item.subtitle}</span>
+                    <h2 className="text-4xl font-black text-[#001D4A] tracking-tighter mt-2">{item.title}</h2>
+                  </div>
+
+                  <p className="text-slate-500 font-medium leading-relaxed max-w-md italic">
+                    "{item.description}"
                   </p>
 
-                  <div className="space-y-4 pt-4">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Kriteria Kelayakan</p>
-                    <div className="grid grid-cols-1 gap-3">
-                      {item.eligibility.map((list, lidx) => (
-                        <div key={lidx} className="flex items-start gap-3">
-                          <CheckCircle2 size={16} className="text-emerald-500 mt-1 shrink-0" />
-                          <span className="text-sm font-medium text-slate-700">{list}</span>
-                        </div>
-                      ))}
-                    </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4">
+                    {item.eligibility.map((list, lidx) => (
+                      <motion.div 
+                        key={lidx} 
+                        whileHover={{ x: 5 }}
+                        className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl border border-transparent hover:border-blue-100 transition-all"
+                      >
+                        <CheckCircle2 size={16} className="text-[#001D4A] shrink-0" />
+                        <span className="text-[11px] font-black text-slate-600 uppercase tracking-tighter">{list}</span>
+                      </motion.div>
+                    ))}
                   </div>
 
-                  <div className="p-4 bg-slate-50 border-l-4 border-[#FFD700] flex items-center gap-4">
-                    <AlertCircle size={18} className="text-[#F57C00]" />
-                    <p className="text-xs font-bold text-[#001D4A] italic">{item.highlight}</p>
+                  <div className="pt-8">
+                    <div className="inline-flex items-center gap-4 px-6 py-3 bg-[#001D4A] rounded-full text-white text-xs font-black italic tracking-widest shadow-lg group-hover:bg-[#F57C00] transition-colors">
+                      <Zap size={16} className="text-[#FFD700] animate-pulse" />
+                      {item.highlight}
+                    </div>
                   </div>
                 </div>
               </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
       </section>
 
-      {/* PROCESS STEPS - MINIMALIST TIMELINE */}
-      <section className="py-24 bg-[#001D4A] text-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-6">
-            <div className="space-y-4">
-              <h2 className="text-4xl font-black tracking-tight leading-none">Alur Registrasi <br/> & <span className="text-[#FFD700]">Asesmen</span></h2>
-              <p className="text-slate-400 max-w-sm text-sm">Prosedur standar pendaftaran untuk memastikan kualitas konversi SKS Anda.</p>
+      {/* --- TIMELINE SECTION WITH SCROLL PARALLAX --- */}
+      <section className="py-32 bg-[#001D4A] relative overflow-hidden">
+        <motion.div style={{ y: yRange }} className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="text-center mb-24 space-y-6">
+            <motion.h2 
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: false }}
+              className="text-5xl md:text-7xl font-black text-white tracking-tighter italic"
+            >
+              ALUR <span className="text-[#FFD700]">KONVERSI</span>
+            </motion.h2>
+            <div className="flex justify-center gap-2">
+              {[...Array(3)].map((_, i) => (
+                <motion.div 
+                  key={i}
+                  animate={{ opacity: [0.2, 1, 0.2] }}
+                  transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.2 }}
+                  className="w-12 h-1 bg-[#FFD700]" 
+                />
+              ))}
             </div>
-            <Link href="https://pmb.unmer.ac.id" className="px-8 py-4 bg-white text-[#001D4A] font-black text-xs uppercase tracking-widest hover:bg-[#FFD700] transition-colors">
-              Mulai Daftar Online
-            </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-px bg-white/10 border border-white/10">
-            {steps.map((s, idx) => (
-              <div key={idx} className="p-8 space-y-6 hover:bg-white/5 transition-colors group">
-                <span className="text-5xl font-black text-white/10 group-hover:text-[#FFD700]/20 transition-colors">{s.id}</span>
-                <div className="space-y-2">
-                  <h3 className="font-black text-sm uppercase tracking-wider">{s.label}</h3>
-                  <p className="text-slate-400 text-xs leading-relaxed font-medium">{s.detail}</p>
-                </div>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+            {[
+              { id: '01', t: 'Evaluasi', d: 'Konsultasi awal dengan Prodi.' },
+              { id: '02', t: 'Portal', d: 'Registrasi di pmb.unmer.ac.id' },
+              { id: '03', t: 'Berkas', d: 'Upload bukti & transkrip nilai.' },
+              { id: '04', t: 'Uji', d: 'Asesmen mandiri & wawancara.' },
+              { id: '05', t: 'SK', d: 'Penerbitan SK Rekognisi SKS.' }
+            ].map((s, idx) => (
+              <motion.div 
+                key={idx} 
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false }}
+                transition={{ delay: idx * 0.1, type: 'spring' }}
+                className="group p-10 bg-white/5 backdrop-blur-md border border-white/10 rounded-[3rem] hover:bg-white transition-all duration-500"
+              >
+                <span className="text-6xl font-black text-white/10 group-hover:text-[#001D4A]/10 transition-colors block mb-6">{s.id}</span>
+                <h3 className="text-white group-hover:text-[#001D4A] font-black text-lg uppercase tracking-widest mb-2">{s.t}</h3>
+                <p className="text-slate-400 group-hover:text-slate-500 text-xs leading-relaxed font-medium">{s.d}</p>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
       </section>
 
-      {/* DOCUMENT CHECKLIST & HELP */}
-      <section className="py-24 px-6 bg-white">
+      {/* --- CHECKLIST SECTION --- */}
+      <section className="py-32 px-6">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
-            
-            <div className="lg:col-span-2 space-y-12">
-              <h3 className="text-2xl font-black text-[#001D4A] flex items-center gap-3">
-                <FileText className="text-[#F57C00]" /> Check-list Dokumen Wajib
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+            <motion.div 
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: false }}
+              className="lg:col-span-8 space-y-12"
+            >
+              <h3 className="text-4xl font-black text-[#001D4A] tracking-tighter uppercase flex items-center gap-4">
+                <div className="w-10 h-10 bg-[#FFD700] rounded-full flex items-center justify-center text-[#001D4A]">
+                  <FileText size={20} />
+                </div>
+                Administrasi Dokumen
               </h3>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[
-                  'Transkrip Nilai Resmi (Legalized)',
-                  'Surat Pindah & Keterangan Keluar PT asal',
-                  'Print-out Profil Mahasiswa PD-DIKTI',
-                  'Sertifikat Kompetensi (Khusus RPL)',
-                  'Curriculum Vitae & Portofolio Karya',
-                  'Ijazah Terakhir & SKHUN',
+                  'Transkrip Nilai (Legalized)',
+                  'Surat Pindah Resmi & SK Keluar',
+                  'Print-out Profil PD-DIKTI',
+                  'Sertifikat Kompetensi (RPL)',
+                  'Portfolio & CV Profesional',
+                  'Ijazah & SKHUN Terakhir',
                   'KTP & Kartu Keluarga',
-                  'Pas Foto Background Merah (Digital)'
+                  'Pas Foto Digital (Red Background)'
                 ].map((doc, idx) => (
-                  <div key={idx} className="flex items-center gap-4 p-5 border border-slate-100 hover:border-slate-300 transition-all">
-                    <div className="w-2 h-2 bg-[#FFD700] shrink-0" />
-                    <span className="text-sm font-bold text-slate-700">{doc}</span>
-                  </div>
+                  <motion.div 
+                    key={idx} 
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: false }}
+                    transition={{ delay: idx * 0.05 }}
+                    whileHover={{ scale: 1.02, x: 10 }}
+                    className="flex items-center gap-5 p-6 bg-slate-50 rounded-3xl border border-slate-100 hover:bg-white hover:shadow-xl transition-all"
+                  >
+                    <CheckCircle2 size={18} className="text-emerald-500" />
+                    <span className="text-xs font-black text-[#001D4A] uppercase tracking-wide">{doc}</span>
+                  </motion.div>
                 ))}
               </div>
-            </div>
+            </motion.div>
 
-            <div className="space-y-8">
-              <div className="bg-slate-50 p-8 border border-slate-200 space-y-6">
-                <div className="p-3 bg-white w-fit shadow-sm text-[#001D4A]">
-                  <HelpCircle size={24} />
+            {/* --- SIDEBAR --- */}
+            <motion.div 
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: false }}
+              className="lg:col-span-4"
+            >
+              <div className="sticky top-32 space-y-6">
+                <div className="bg-[#001D4A] p-10 rounded-[3rem] text-white space-y-8 relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 p-10 opacity-10 group-hover:rotate-45 transition-transform duration-700">
+                    <HelpCircle size={100} />
+                  </div>
+                  <h4 className="text-2xl font-black tracking-tight leading-tight relative z-10">
+                    Punya Kendala <br/> Konversi?
+                  </h4>
+                  <p className="text-slate-400 text-sm font-medium leading-relaxed relative z-10">
+                    Tim Akademik kami siap bantu hitung estimasi SKS gratis.
+                  </p>
+                  <Link href="#" className="flex items-center justify-center gap-3 w-full py-5 bg-[#FFD700] text-[#001D4A] rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-white transition-all shadow-xl shadow-yellow-500/20 relative z-10">
+                    Chat Admin PMB <ArrowRight size={16} />
+                  </Link>
                 </div>
-                <h4 className="text-xl font-black text-[#001D4A]">Punya Kendala Konversi?</h4>
-                <p className="text-sm text-slate-500 font-medium leading-relaxed">
-                  Tim konsultan akademik kami siap membantu menghitung estimasi SKS yang bisa diakui sebelum Anda melakukan pembayaran formulir.
-                </p>
-                <div className="space-y-3 pt-4 border-t border-slate-200">
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Hotline Akademik</p>
-                  <p className="text-sm font-black text-[#001D4A]">akademik.pusat@unmer.ac.id</p>
-                  <p className="text-sm font-black text-[#001D4A]">(0341) 568395 — Ext 101</p>
-                </div>
-                <button className="w-full py-4 bg-[#001D4A] text-white font-black text-xs uppercase tracking-widest hover:bg-[#F57C00] transition-colors flex items-center justify-center gap-3">
-                  Chat WhatsApp <ArrowRight size={14} />
-                </button>
-              </div>
 
-              <div className="p-8 border-2 border-dashed border-slate-200 flex flex-col items-center text-center space-y-4">
-                 <Download size={32} className="text-slate-300" />
-                 <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Download Panduan</p>
-                 <Link href="#" className="text-sm font-black text-[#001D4A] hover:text-[#F57C00] underline decoration-[#FFD700] decoration-2 underline-offset-4">
-                   Pedoman RPL UNMER 2026.pdf
-                 </Link>
+                <motion.div 
+                  whileHover={{ scale: 0.98 }}
+                  className="p-8 border-2 border-dashed border-slate-200 rounded-[3rem] flex flex-col items-center gap-4 group cursor-pointer"
+                >
+                   <Download size={28} className="text-slate-300 group-hover:text-[#F57C00] transition-colors" />
+                   <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Pedoman RPL 2026.pdf</p>
+                </motion.div>
               </div>
-            </div>
-
+            </motion.div>
           </div>
         </div>
       </section>
