@@ -105,8 +105,10 @@ const fakultasData = [
   }
 ];
 
+type Fakultas = typeof fakultasData[0];
+
 export default function FasilitasPage() {
-  const [selectedFakultas, setSelectedFakultas] = useState(null);
+  const [selectedFakultas, setSelectedFakultas] = useState<Fakultas | null>(null);
 
   return (
     <div className="bg-[#F8FAFC] min-h-screen pb-20">
