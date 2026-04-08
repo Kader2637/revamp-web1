@@ -115,14 +115,14 @@ const Navbar = () => {
         {/* Brand / Logo Section */}
         <Link href="/" className="flex items-center gap-3 md:gap-4 group">
           <div className="flex items-center gap-2">
-            <div className="relative h-12 w-12 md:h-14 md:w-14 transition-transform duration-500 group-hover:scale-110">
+            <div className="relative h-9 w-9 md:h-14 md:w-14 transition-transform duration-500 group-hover:scale-110">
               <img 
                 src="/logounmer.png" 
                 alt="Logo UNMER Malang" 
                 className="object-contain w-full h-full"
               />
             </div>
-            <div className="relative h-23 w-23 md:h-14 md:w-14 transition-transform duration-500 group-hover:scale-110 lg:hidden">
+            <div className="relative h-17 w-17 md:h-14 md:w-14 transition-transform duration-500 group-hover:scale-110 lg:hidden">
               <img 
                 src="/logoteksunmer.png" 
                 alt="Logo Teknik UNMER" 
