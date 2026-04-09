@@ -238,7 +238,7 @@ export default function Home() {
                   Kampus Unggul & Berkarakter
                 </div>
 
-                <h1 className="text-6xl md:text-7xl lg:text-[6.5rem] font-black text-white leading-[0.95] tracking-tighter">
+                <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[6.5rem] font-black text-white leading-[1] md:leading-[0.95] tracking-tighter">
                   Wujudkan Potensi.<br />
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFD700] via-yellow-200 to-white">
                     Ukira Prestasi.
@@ -259,12 +259,12 @@ export default function Home() {
               >
                 <Link
                   href="https://pmb.unmer.ac.id"
-                  className="px-12 py-6 bg-[#FFD700] text-[#001D4A] rounded-2xl font-black text-xl hover:bg-white transition-all duration-300 flex items-center justify-center group shadow-[0_20px_40px_-10px_rgba(255,215,0,0.3)] hover:shadow-white/20 active:scale-95"
+                  className="px-8 md:px-12 py-4 md:py-6 bg-[#FFD700] text-[#001D4A] rounded-2xl font-black text-lg md:text-xl hover:bg-white transition-all duration-300 flex items-center justify-center group shadow-[0_20px_40px_-10px_rgba(255,215,0,0.3)] hover:shadow-white/20 active:scale-95"
                 >
                   Daftar Sekarang
                   <ArrowRight className="w-6 h-6 ml-2 group-hover:translate-x-1 transition-transform" />
                 </Link>
-                <button className="px-10 py-6 bg-white/5 border border-white/10 text-white rounded-2xl font-bold text-lg backdrop-blur-lg hover:bg-white/10 transition-colors flex items-center justify-center gap-3">
+                <button className="px-6 md:px-10 py-4 md:py-6 bg-white/5 border border-white/10 text-white rounded-2xl font-bold text-base md:text-lg backdrop-blur-lg hover:bg-white/10 transition-colors flex items-center justify-center gap-3">
                   <BookOpen className="w-5 h-5 text-[#FFD700]" />
                   Profil Kampus
                 </button>

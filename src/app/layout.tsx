@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navigation/Navbar";
+import VirtualTour from "@/components/features/VirtualTour";
 import Footer from "@/components/Footer";
 
 const inter = Inter({
@@ -65,6 +66,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <Navbar />
         <main className="flex-1">{children}</main>
+        <VirtualTour />
         <Footer />
       </body>
     </html>

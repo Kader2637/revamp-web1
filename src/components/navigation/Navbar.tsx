@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, X, ChevronDown, Search } from 'lucide-react';
 import MegaMenu from './MegaMenu';
+import AdmissionMegaMenu from './AdmissionMegaMenu';
+import StudentQuickAccess from './StudentQuickAccess';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
@@ -113,16 +115,16 @@ const Navbar = () => {
       <nav className="max-w-[90rem] mx-auto px-6 md:px-12 flex items-center justify-between">
         
         {/* Brand / Logo Section */}
-        <Link href="/" className="flex items-center gap-3 md:gap-4 group">
+        <Link href="/" className="flex items-center gap-2 md:gap-4 group shrink-0">
           <div className="flex items-center gap-2">
-            <div className="relative h-9 w-9 md:h-14 md:w-14 transition-transform duration-500 group-hover:scale-110">
+            <div className="relative h-8 w-8 md:h-14 md:w-14 transition-transform duration-500 group-hover:scale-110">
               <img 
                 src="/logounmer.png" 
                 alt="Logo UNMER Malang" 
                 className="object-contain w-full h-full"
               />
             </div>
-            <div className="relative h-17 w-17 md:h-14 md:w-14 transition-transform duration-500 group-hover:scale-110 lg:hidden">
+            <div className="relative h-10 w-10 md:h-14 md:w-14 transition-transform duration-500 group-hover:scale-110 lg:hidden hidden sm:block">
               <img 
                 src="/logoteksunmer.png" 
                 alt="Logo Teknik UNMER" 
@@ -130,11 +132,11 @@ const Navbar = () => {
               />
             </div>
           </div>
-          <div className="flex flex-col border-l border-white/20 pl-4 hidden sm:flex">
-            <span className="font-bold text-xl md:text-2xl tracking-tight text-white transition-colors duration-500">
+          <div className="flex flex-col border-l border-white/20 pl-3 hidden md:flex">
+            <span className="font-bold text-lg md:text-2xl tracking-tight text-white transition-colors duration-500">
               U<span className="text-[#F57C00]">N</span>MER <span className="font-light italic">Malang</span>
             </span>
-            <span className={`text-[9px] uppercase tracking-[0.2em] font-semibold transition-colors duration-500 ${isScrolled ? 'text-slate-300' : 'text-[#FFD700]'}`}>
+            <span className={`text-[8px] md:text-[9px] uppercase tracking-[0.2em] font-semibold transition-colors duration-500 ${isScrolled ? 'text-slate-300' : 'text-[#FFD700]'}`}>
               Pusat Pendidikan Berkarakter
             </span>
           </div>
@@ -160,18 +162,26 @@ const Navbar = () => {
                 <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${activeMenu === key ? 'rotate-180' : ''}`} />
               </button>
               
-              <MegaMenu 
-                isOpen={activeMenu === key} 
-                columns={value.columns} 
-                featuredCard={(value as any).featured}
-              />
+              {key === 'penerimaan' ? (
+                <AdmissionMegaMenu isOpen={activeMenu === key} />
+              ) : (
+                <MegaMenu 
+                  isOpen={activeMenu === key} 
+                  columns={value.columns} 
+                  featuredCard={(value as any).featured}
+                />
+              )}
             </div>
           ))}
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-4 md:gap-6">
-          <button className="p-2.5 rounded-full text-white hover:bg-white/10 transition-all duration-300">
+        <div className="flex items-center gap-2 md:gap-6">
+          <div className="hidden lg:block">
+            <StudentQuickAccess />
+          </div>
+
+          <button className="p-2 rounded-full text-white hover:bg-white/10 transition-all duration-300">
             <Search className="w-5 h-5" />
           </button>
           
@@ -263,7 +273,9 @@ const Navbar = () => {
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.3 }}
+                  className="space-y-6 pt-4"
                 >
+                  <StudentQuickAccess />
                   <Link href="https://pmb.unmer.ac.id" className="block w-full bg-[#FFD700] text-[#001D4A] text-center py-5 rounded-2xl font-black uppercase tracking-widest shadow-lg shadow-yellow-500/20">
                     Daftar Sekarang
                   </Link>
