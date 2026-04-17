@@ -147,7 +147,7 @@ export default function SiakadLayout({
                <span>Siakad</span>
                <ChevronRight size={14} />
                <span className="text-slate-800">
-                  {menuItems.find((m) => pathname === m.href || pathname.startsWith(m.href + '/'))?.label || "Dashboard"}
+                  {[...menuItems].reverse().find((m) => pathname === m.href || (m.href !== "/siakad" && pathname.startsWith(m.href)))?.label || "Beranda"}
                </span>
             </div>
           </div>

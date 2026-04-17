@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MapPin, Clock, Calendar as CalendarIcon, User, Layers, Search, Filter } from "lucide-react";
+import { MapPin, Clock, Calendar as CalendarIcon, User, Layers, Search, Filter, LayoutDashboard } from "lucide-react";
 
 export default function JadwalPage() {
   const [activeDay, setActiveDay] = useState<string>("Senin");
